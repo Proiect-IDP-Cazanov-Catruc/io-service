@@ -6,9 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
-public class IoserviceApplication {
+public class IoServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(IoserviceApplication.class, args);
+		SpringApplication.run(IoServiceApplication.class, args);
 	}
 }
