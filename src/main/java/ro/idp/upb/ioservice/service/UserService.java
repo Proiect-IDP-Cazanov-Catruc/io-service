@@ -1,5 +1,8 @@
+/* Ionel Catruc 343C3, Veaceslav Cazanov 343C3 | IDP IO-SERVICE | (C) 2024 */
 package ro.idp.upb.ioservice.service;
 
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -12,52 +15,54 @@ import ro.idp.upb.ioservice.data.enums.Role;
 import ro.idp.upb.ioservice.exception.UsernameNotFoundException;
 import ro.idp.upb.ioservice.repository.UserRepository;
 
-import java.util.Optional;
-import java.util.UUID;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
 
-    public Optional<User> findUserById(UUID userId) {
-        return userRepository.findById(userId);
-    }
+	public Optional<User> findUserById(UUID userId) {
+		return userRepository.findById(userId);
+	}
 
-    public GetUserDto userToDto(User user) {
-        return GetUserDto.builder()
-                .id(user.getId())
-                .firstName(user.getFirstname())
-                .lastName(user.getLastname())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .build();
-    }
+	public GetUserDto userToDto(User user) {
+		return GetUserDto.builder()
+				.id(user.getId())
+				.firstName(user.getFirstname())
+				.lastName(user.getLastname())
+				.email(user.getEmail())
+				.role(user.getRole())
+				.build();
+	}
 
-    public GetUserDto getUserByEmail(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> {
-            log.error("Username {} not found", email);
-            return new UsernameNotFoundException("User not found");
-        });
-        return userToDto(user);
-    }
+	public GetUserDto getUserByEmail(String email) {
+		User user =
+				userRepository
+						.findByEmail(email)
+						.orElseThrow(
+								() -> {
+									log.error("Username {} not found", email);
+									return new UsernameNotFoundException("User not found");
+								});
+		return userToDto(user);
+	}
 
-    public ResponseEntity<?> registerUser(RegisterRequest dto) {if (userRepository.existsByEmail(dto.getEmail())) {
-        log.error("Username {} already exists!", dto.getEmail());
-        return ResponseEntity.badRequest().build();
-    }
-        var user = User.builder()
-                .firstname(dto.getFirstName())
-                .lastname(dto.getLastName())
-                .email(dto.getEmail())
-                .password(passwordEncoder.encode(dto.getPassword()))
-                .role(Role.USER)
-                .build();
-        var savedUser = userRepository.save(user);
-        GetUserDto userDto = userToDto(savedUser);
-        return ResponseEntity.ok(userDto);
-
-    }
+	public ResponseEntity<?> registerUser(RegisterRequest dto) {
+		if (userRepository.existsByEmail(dto.getEmail())) {
+			log.error("Username {} already exists!", dto.getEmail());
+			return ResponseEntity.badRequest().build();
+		}
+		var user =
+				User.builder()
+						.firstname(dto.getFirstName())
+						.lastname(dto.getLastName())
+						.email(dto.getEmail())
+						.password(passwordEncoder.encode(dto.getPassword()))
+						.role(Role.USER)
+						.build();
+		var savedUser = userRepository.save(user);
+		GetUserDto userDto = userToDto(savedUser);
+		return ResponseEntity.ok(userDto);
+	}
 }

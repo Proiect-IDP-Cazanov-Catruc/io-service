@@ -1,9 +1,9 @@
+/* Ionel Catruc 343C3, Veaceslav Cazanov 343C3 | IDP IO-SERVICE | (C) 2024 */
 package ro.idp.upb.ioservice.data.dto.response;
 
-import ro.idp.upb.ioservice.data.enums.Role;
-import lombok.*;
-
 import java.util.UUID;
+import lombok.*;
+import ro.idp.upb.ioservice.data.enums.Role;
 
 @Getter
 @Setter
@@ -11,9 +11,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetUserDto {
-    private UUID id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private Role role;
+	private UUID id;
+	private String firstName;
+	private String lastName;
+	private String email;
+	private Role role;
 }
