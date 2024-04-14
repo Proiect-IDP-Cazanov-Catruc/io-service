@@ -1,0 +1,31 @@
+id,name,description,price,quantity,category_id
+1,Laptop,Powerful laptop with Intel Core i7 processor,1200,15,1
+2,Smartphone,High-end smartphone with OLED display,900,25,2
+3,Tablet,Lightweight tablet with long battery life,500,20,2
+4,Headphones,Noise-canceling headphones with Bluetooth,150,30,3
+5,Smartwatch,Water-resistant smartwatch with fitness tracking,200,10,4
+6,Desktop PC,Customizable desktop PC with Nvidia graphics,1500,10,1
+7,Printer,Wireless all-in-one printer for home office,300,8,5
+8,External Hard Drive,Portable hard drive with 2TB storage,100,12,6
+9,Wireless Mouse,Ergonomic wireless mouse for productivity,50,20,3
+10,Keyboard,Mechanical gaming keyboard with RGB lighting,80,15,3
+11,Router,High-speed router for seamless internet connection,120,10,5
+12,Monitor,27-inch monitor with IPS display,300,10,7
+13,Camera,DSLR camera with 24MP sensor,700,5,8
+14,Speakers,2.1 multimedia speakers with subwoofer,80,15,9
+15,Webcam,HD webcam for video conferencing,50,20,10
+16,Graphics Tablet,Graphics tablet for digital artists,200,8,8
+17,Portable Charger,High-capacity portable charger,40,25,11
+18,Fitness Tracker,Smart fitness tracker with heart rate monitor,80,20,4
+19,Wireless Earbuds,True wireless earbuds with noise isolation,120,15,9
+20,Gaming Console,Next-gen gaming console with 4K support,400,10,12
+21,Electric Scooter,Foldable electric scooter for urban commuting,300,10,13
+22,Drone,Compact drone with 4K camera,600,8,14
+23,Smart Thermostat,Programmable smart thermostat for home automation,150,15,15
+24,Smart Bulbs,Smart LED bulbs with customizable colors,50,20,15
+25,Security Camera,Wireless security camera system,200,10,15
+26,VR Headset,Virtual reality headset for immersive experiences,300,8,16
+27,Robot Vacuum,Robotic vacuum cleaner with mapping technology,250,12,17
+28,Electric Toothbrush,Rechargeable electric toothbrush with multiple modes,80,15,18
+29,Coffee Maker,Espresso coffee maker with built-in grinder,200,10,19
+30,Blender,High-speed blender for smoothies and soups,100,15,20
