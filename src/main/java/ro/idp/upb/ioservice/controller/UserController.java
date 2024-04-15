@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ro.idp.upb.ioservice.data.dto.request.RegisterRequest;
+import ro.idp.upb.ioservice.data.dto.request.ValidateLoginDto;
 import ro.idp.upb.ioservice.data.dto.response.GetUserDto;
 import ro.idp.upb.ioservice.service.UserService;
 
@@ -25,5 +26,10 @@ public class UserController {
 	@PostMapping("/register")
 	public ResponseEntity<?> registerUser(@RequestBody RegisterRequest dto) {
 		return userService.registerUser(dto);
+	}
+
+	@PostMapping("/validate-login")
+	public ResponseEntity<GetUserDto> validateLogin(@RequestBody ValidateLoginDto dto) {
+		return userService.validateLogin(dto);
 	}
 }

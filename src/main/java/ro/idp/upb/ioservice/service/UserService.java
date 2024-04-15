@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ro.idp.upb.ioservice.data.dto.request.RegisterRequest;
+import ro.idp.upb.ioservice.data.dto.request.ValidateLoginDto;
 import ro.idp.upb.ioservice.data.dto.response.GetUserDto;
 import ro.idp.upb.ioservice.data.entity.User;
 import ro.idp.upb.ioservice.data.enums.Role;
@@ -36,15 +37,18 @@ public class UserService {
 				.build();
 	}
 
+	public User findUserByEmail(String email) {
+		return userRepository
+				.findByEmail(email)
+				.orElseThrow(
+						() -> {
+							log.error("Username {} not found", email);
+							return new UsernameNotFoundException("User not found");
+						});
+	}
+
 	public GetUserDto getUserByEmail(String email) {
-		User user =
-				userRepository
-						.findByEmail(email)
-						.orElseThrow(
-								() -> {
-									log.error("Username {} not found", email);
-									return new UsernameNotFoundException("User not found");
-								});
+		User user = findUserByEmail(email);
 		return userToDto(user);
 	}
 
@@ -64,5 +68,14 @@ public class UserService {
 		var savedUser = userRepository.save(user);
 		GetUserDto userDto = userToDto(savedUser);
 		return ResponseEntity.ok(userDto);
+	}
+
+	public ResponseEntity<GetUserDto> validateLogin(final ValidateLoginDto dto) {
+		final User user = findUserByEmail(dto.getEmail());
+		if (passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+			return ResponseEntity.ok(userToDto(user));
+		} else {
+			return ResponseEntity.badRequest().build();
+		}
 	}
 }
