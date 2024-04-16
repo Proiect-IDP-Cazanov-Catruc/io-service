@@ -1,6 +1,8 @@
 /* Ionel Catruc 343C3, Veaceslav Cazanov 343C3 | IDP IO-SERVICE | (C) 2024 */
 package ro.idp.upb.ioservice.service;
 
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -45,5 +47,11 @@ public class ProductService {
 				.quantity(product.getQuantity())
 				.price(product.getPrice())
 				.build();
+	}
+
+	public List<ProductGetDto> getProducts(UUID categoryId) {
+		List<Product> products = productRepository.findByOptionalCategoryId(categoryId);
+
+		return products.stream().map(this::productToProductGetDto).toList();
 	}
 }
