@@ -49,11 +49,18 @@ public class UserService {
 	}
 
 	public GetUserDto getUserByEmail(String email) {
+		log.info("Getting user dto by email {}...", email);
 		User user = findUserByEmail(email);
+		log.info("Got user dto by email {}, userId {}!", email, user.getId());
 		return userToDto(user);
 	}
 
 	public ResponseEntity<?> registerUser(RegisterRequest dto) {
+		log.info(
+				"Registering user [Firstname: {}], [Lastname: {}], [Email: {}]...",
+				dto.getFirstName(),
+				dto.getLastName(),
+				dto.getEmail());
 		if (userRepository.existsByEmail(dto.getEmail())) {
 			log.error("Username {} already exists!", dto.getEmail());
 			return ResponseEntity.badRequest().build();
@@ -68,19 +75,33 @@ public class UserService {
 						.build();
 		var savedUser = userRepository.save(user);
 		GetUserDto userDto = userToDto(savedUser);
+		log.info(
+				"Registered user [Firstname: {}], [Lastname: {}], [Email: {}], associated id: {}",
+				dto.getFirstName(),
+				dto.getLastName(),
+				dto.getEmail(),
+				savedUser.getId());
 		return ResponseEntity.ok(userDto);
 	}
 
 	public ResponseEntity<GetUserDto> validateLogin(final ValidateLoginDto dto) {
+		log.info("Validating login request for email {}...", dto.getEmail());
 		final User user = findUserByEmail(dto.getEmail());
 		if (passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+			log.info("Login request is validated for email {}!", dto.getEmail());
 			return ResponseEntity.ok(userToDto(user));
 		} else {
+			log.error("Invalid credentials for login request email {}!", dto.getEmail());
 			return ResponseEntity.badRequest().build();
 		}
 	}
 
 	public ResponseEntity<?> createManager(PostManagerDto dto) {
+		log.info(
+				"Creating manager [Firstname: {}], [Lastname: {}], [Email: {}]...",
+				dto.getFirstName(),
+				dto.getLastName(),
+				dto.getEmail());
 		if (userRepository.existsByEmail(dto.getEmail())) {
 			log.error("[MANAGER CREATE] Email {} already exists!", dto.getEmail());
 			return ResponseEntity.badRequest().build();
@@ -94,6 +115,12 @@ public class UserService {
 						.role(Role.MANAGER)
 						.build();
 		var savedUser = userRepository.save(user);
+		log.info(
+				"Created manager [Firstname: {}], [Lastname: {}], [Email: {}], associated id: {}!",
+				dto.getFirstName(),
+				dto.getLastName(),
+				dto.getEmail(),
+				savedUser.getId());
 		return ResponseEntity.ok(userToDto(savedUser));
 	}
 }

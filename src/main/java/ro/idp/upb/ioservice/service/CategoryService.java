@@ -17,6 +17,7 @@ public class CategoryService {
 	private final CategoryRepository categoryRepository;
 
 	public Category findCategoryByCategoryId(UUID categoryId) {
+		log.info("Find category by ID {}!", categoryId);
 		return categoryRepository
 				.findById(categoryId)
 				.orElseGet(
@@ -31,6 +32,7 @@ public class CategoryService {
 	}
 
 	public List<CategoryGetDto> getAllCategories() {
+		log.info("Get all categories!");
 		return categoryRepository.findAll().stream().map(this::categoryToCategoryGetDto).toList();
 	}
 }

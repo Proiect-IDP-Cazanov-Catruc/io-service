@@ -24,8 +24,10 @@ public class TokenService {
 	private final UserService userService;
 
 	public ResponseEntity<?> findToken(String token, TokenType tokenType) {
+		log.info("Find token {} and token type {}...", token.substring(0, 15), tokenType);
 		Optional<Token> tokenOptional = tokenRepository.findByTokenAndTokenType(token, tokenType);
 		if (tokenOptional.isEmpty()) {
+			log.error("Unable to find token {} and token type {}!", token.substring(0, 15), tokenType);
 			return ResponseEntity.notFound().build();
 		} else {
 			Token tokenEntity = tokenOptional.get();
@@ -50,15 +52,18 @@ public class TokenService {
 							.build();
 
 			tokenDto.setAssociatedToken(associatedTokenDto);
+			log.info("Found token {} and token type {}, returning!", token.substring(0, 15), tokenType);
 
 			return ResponseEntity.ok(tokenDto);
 		}
 	}
 
 	public void logoutToken(String token) {
+		log.info("Trying to revoke(logout) token {}...", token.substring(0, 15));
 		Token storedToken =
 				tokenRepository.findByTokenAndTokenType(token, TokenType.ACCESS_TOKEN).orElse(null);
 		if (storedToken != null) {
+			log.info("Token {} found, revoking it and associated token...", token.substring(0, 15));
 			storedToken.setExpired(true);
 			storedToken.setRevoked(true);
 			tokenRepository.save(storedToken);
@@ -69,6 +74,11 @@ public class TokenService {
 	}
 
 	public ResponseEntity<?> saveUserTokens(PostTokensDto tokens) {
+		log.info(
+				"Trying to save access token {} and refresh token {} for user {}...",
+				tokens.getAccessToken().substring(0, 15),
+				tokens.getRefreshToken().substring(0, 15),
+				tokens.getUserId());
 		User user =
 				userService
 						.findUserById(tokens.getUserId())
@@ -96,10 +106,16 @@ public class TokenService {
 						.build();
 		accessTokenEntity.setAssociatedToken(refreshTokenEntity);
 		tokenRepository.save(accessTokenEntity);
+		log.info(
+				"Saved access token {} and refresh token {} for user {}!",
+				tokens.getAccessToken().substring(0, 15),
+				tokens.getRefreshToken().substring(0, 15),
+				tokens.getUserId());
 		return ResponseEntity.ok().build();
 	}
 
 	public void revokeToken(String token) {
+		log.info("Revoking token {}...", token.substring(0, 15));
 		List<Token> tokens = tokenRepository.findByToken(token);
 		tokens.forEach(
 				dbToken -> {
@@ -113,12 +129,14 @@ public class TokenService {
 	}
 
 	public ResponseEntity<?> isRefreshToken(String token) {
+		log.info("Verifying if token {} is actually refresh token...", token.substring(0, 15));
 		Token storedToken =
 				tokenRepository.findByTokenAndTokenType(token, TokenType.REFRESH_TOKEN).orElse(null);
 		if (storedToken == null) {
 			log.error("Provided token {} is not a refresh token!", token);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Boolean.FALSE);
 		} else {
+			log.info("Token {} is actually refresh token! Returning true!", token.substring(0, 15));
 			return ResponseEntity.ok(Boolean.TRUE);
 		}
 	}
