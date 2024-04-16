@@ -1,3 +1,4 @@
+/* Ionel Catruc 343C3, Veaceslav Cazanov 343C3 | IDP IO-SERVICE | (C) 2024 */
 package ro.idp.upb.ioservice.controller;
 
 import jakarta.validation.Valid;
@@ -15,10 +16,10 @@ import ro.idp.upb.ioservice.service.ProductService;
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final ProductService productService;
+	private final ProductService productService;
 
-    @PostMapping
-    public ResponseEntity<?> addProduct(@RequestBody @Valid AddProductPost dto) {
-        return productService.addProduct(dto);
-    }
+	@PostMapping
+	public ResponseEntity<?> addProduct(@RequestBody @Valid AddProductPost dto) {
+		return productService.addProduct(dto);
+	}
 }

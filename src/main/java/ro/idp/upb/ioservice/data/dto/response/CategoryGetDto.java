@@ -1,12 +1,8 @@
+/* Ionel Catruc 343C3, Veaceslav Cazanov 343C3 | IDP IO-SERVICE | (C) 2024 */
 package ro.idp.upb.ioservice.data.dto.response;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.*;
-
 import java.util.UUID;
+import lombok.*;
 
 @Getter
 @Setter
@@ -14,6 +10,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class CategoryGetDto {
-    private UUID id;
-    private String name;
+	private UUID id;
+	private String name;
 }
