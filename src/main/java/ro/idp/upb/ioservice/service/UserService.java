@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ro.idp.upb.ioservice.data.dto.request.PostManagerDto;
 import ro.idp.upb.ioservice.data.dto.request.RegisterRequest;
 import ro.idp.upb.ioservice.data.dto.request.ValidateLoginDto;
 import ro.idp.upb.ioservice.data.dto.response.GetUserDto;
@@ -30,8 +31,8 @@ public class UserService {
 	public GetUserDto userToDto(User user) {
 		return GetUserDto.builder()
 				.id(user.getId())
-				.firstName(user.getFirstname())
-				.lastName(user.getLastname())
+				.firstName(user.getFirstName())
+				.lastName(user.getLastName())
 				.email(user.getEmail())
 				.role(user.getRole())
 				.build();
@@ -59,8 +60,8 @@ public class UserService {
 		}
 		var user =
 				User.builder()
-						.firstname(dto.getFirstName())
-						.lastname(dto.getLastName())
+						.firstName(dto.getFirstName())
+						.lastName(dto.getLastName())
 						.email(dto.getEmail())
 						.password(passwordEncoder.encode(dto.getPassword()))
 						.role(Role.USER)
@@ -77,5 +78,22 @@ public class UserService {
 		} else {
 			return ResponseEntity.badRequest().build();
 		}
+	}
+
+	public ResponseEntity<?> createManager(PostManagerDto dto) {
+		if (userRepository.existsByEmail(dto.getEmail())) {
+			log.error("[MANAGER CREATE] Email {} already exists!", dto.getEmail());
+			return ResponseEntity.badRequest().build();
+		}
+		var user =
+				User.builder()
+						.firstName(dto.getFirstName())
+						.lastName(dto.getLastName())
+						.email(dto.getEmail())
+						.password(passwordEncoder.encode("manager"))
+						.role(Role.MANAGER)
+						.build();
+		var savedUser = userRepository.save(user);
+		return ResponseEntity.ok(userToDto(savedUser));
 	}
 }

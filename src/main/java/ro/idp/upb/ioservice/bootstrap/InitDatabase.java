@@ -56,8 +56,8 @@ public class InitDatabase implements CommandLineRunner {
 	private void addManagerAndAdmin() {
 		User adminUser =
 				User.builder()
-						.firstname("Admin")
-						.lastname("User")
+						.firstName("Admin")
+						.lastName("User")
 						.role(Role.ADMIN)
 						.password(passwordEncoder.encode("admin"))
 						.email("admin@admin.com")
@@ -65,8 +65,8 @@ public class InitDatabase implements CommandLineRunner {
 		userRepository.save(adminUser);
 		User managerUser =
 				User.builder()
-						.firstname("Manager")
-						.lastname("Manager")
+						.firstName("Manager")
+						.lastName("Manager")
 						.role(Role.MANAGER)
 						.password(passwordEncoder.encode("manager"))
 						.email("manager@manager.com")
@@ -94,8 +94,8 @@ public class InitDatabase implements CommandLineRunner {
 
 		for (CSVRecord record : csvParser) {
 			User user = new User();
-			user.setFirstname(record.get("first name"));
-			user.setLastname(record.get("last name"));
+			user.setFirstName(record.get("first name"));
+			user.setLastName(record.get("last name"));
 			user.setEmail(record.get("email"));
 			// Set default password
 			user.setPassword(passwordEncoder.encode("123"));
