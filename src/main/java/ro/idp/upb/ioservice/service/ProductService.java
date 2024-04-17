@@ -2,6 +2,7 @@
 package ro.idp.upb.ioservice.service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +55,7 @@ public class ProductService {
 		return ResponseEntity.ok(productGetDto);
 	}
 
-	private ProductGetDto productToProductGetDto(final Product product) {
+	public ProductGetDto productToProductGetDto(final Product product) {
 		CategoryGetDto categoryGetDto = categoryService.categoryToCategoryGetDto(product.getCategory());
 		return ProductGetDto.builder()
 				.category(categoryGetDto)
@@ -71,5 +72,9 @@ public class ProductService {
 		List<Product> products = productRepository.findByOptionalCategoryId(categoryId);
 		log.info("Got {} products (Optional categoryId: {})!", products.size(), categoryId);
 		return products.stream().map(this::productToProductGetDto).toList();
+	}
+
+	public Set<Product> getProductsByIdsList(List<UUID> productsIds) {
+		return productRepository.getProductsByIdsInIdsList(productsIds);
 	}
 }

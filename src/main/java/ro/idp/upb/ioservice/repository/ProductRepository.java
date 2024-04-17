@@ -2,6 +2,7 @@
 package ro.idp.upb.ioservice.repository;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,4 +12,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
 	@Query("SELECT p FROM Product p WHERE (:categoryId IS NULL OR p.category.id = :categoryId)")
 	List<Product> findByOptionalCategoryId(UUID categoryId);
+
+	@Query("SELECT p FROM Product p WHERE p.id in :productsIds")
+	Set<Product> getProductsByIdsInIdsList(List<UUID> productsIds);
 }
