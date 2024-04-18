@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ro.idp.upb.ioservice.data.dto.request.AddProductPost;
 import ro.idp.upb.ioservice.data.dto.response.CategoryGetDto;
@@ -22,7 +21,7 @@ public class ProductService {
 	private final ProductRepository productRepository;
 	private final CategoryService categoryService;
 
-	public ResponseEntity<?> addProduct(AddProductPost dto) {
+	public ProductGetDto addProduct(AddProductPost dto) {
 		log.info(
 				"Adding product [Name: {}], [Description: {}], [Price: {}], [Quantity: {}], [CategoryId: {}]...",
 				dto.getName(),
@@ -31,10 +30,6 @@ public class ProductService {
 				dto.getQuantity(),
 				dto.getCategoryId());
 		final Category category = categoryService.findCategoryByCategoryId(dto.getCategoryId());
-		if (category == null) {
-			log.error("Add product. CategoryId {} not found!", dto.getCategoryId());
-			return ResponseEntity.notFound().build();
-		}
 		final Product product =
 				Product.builder()
 						.name(dto.getName())
@@ -52,7 +47,7 @@ public class ProductService {
 				dto.getPrice(),
 				dto.getQuantity(),
 				dto.getCategoryId());
-		return ResponseEntity.ok(productGetDto);
+		return productGetDto;
 	}
 
 	public ProductGetDto productToProductGetDto(final Product product) {

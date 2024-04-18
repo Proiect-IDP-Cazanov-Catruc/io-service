@@ -4,7 +4,6 @@ package ro.idp.upb.ioservice.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ro.idp.upb.ioservice.data.dto.request.PostManagerDto;
 import ro.idp.upb.ioservice.data.dto.request.RegisterRequest;
@@ -26,17 +25,17 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<?> registerUser(@RequestBody @Valid RegisterRequest dto) {
+	public GetUserDto registerUser(@RequestBody @Valid RegisterRequest dto) {
 		return userService.registerUser(dto);
 	}
 
 	@PostMapping("/validate-login")
-	public ResponseEntity<GetUserDto> validateLogin(@RequestBody ValidateLoginDto dto) {
+	public GetUserDto validateLogin(@RequestBody ValidateLoginDto dto) {
 		return userService.validateLogin(dto);
 	}
 
 	@PostMapping("/manager")
-	public ResponseEntity<?> createManager(@RequestBody @Valid PostManagerDto dto) {
+	public GetUserDto createManager(@RequestBody @Valid PostManagerDto dto) {
 		return userService.createManager(dto);
 	}
 }

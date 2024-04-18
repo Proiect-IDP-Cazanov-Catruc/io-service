@@ -13,6 +13,7 @@ import ro.idp.upb.ioservice.data.entity.Order;
 import ro.idp.upb.ioservice.data.entity.Product;
 import ro.idp.upb.ioservice.data.entity.User;
 import ro.idp.upb.ioservice.exception.UsernameNotFoundException;
+import ro.idp.upb.ioservice.exception.handle.ProductNotFoundException;
 import ro.idp.upb.ioservice.repository.OrderRepository;
 
 @Service
@@ -33,13 +34,22 @@ public class OrderService {
 						.orElseThrow(
 								() -> {
 									log.error("User with id {} not found", dto.getUserId());
-									return new UsernameNotFoundException("User not found");
+									return new UsernameNotFoundException(dto.getUserId());
 								});
 
-		Set<Product> productsSet = productService.getProductsByIdsList(dto.getProductsIds());
+		Set<Product> foundProductSet = productService.getProductsByIdsList(dto.getProductsIds());
+		dto.getProductsIds()
+				.forEach(
+						dtoProductId -> {
+							if (foundProductSet.stream()
+									.noneMatch(product -> product.getId().equals(dtoProductId))) {
+								log.error("Product with id {} not found", dtoProductId);
+								throw new ProductNotFoundException(dtoProductId);
+							}
+						});
 		log.info(
-				"Fetched {} products for placing order for user {}!", productsSet.size(), user.getId());
-		final Order order = Order.builder().user(user).products(productsSet).build();
+				"Fetched {} products for placing order for user {}!", foundProductSet.size(), user.getId());
+		final Order order = Order.builder().user(user).products(foundProductSet).build();
 		final Order savedOrder = orderRepository.save(order);
 		log.info("Placed order for user {}!", user.getId());
 		return buildGetOrderDto(savedOrder);

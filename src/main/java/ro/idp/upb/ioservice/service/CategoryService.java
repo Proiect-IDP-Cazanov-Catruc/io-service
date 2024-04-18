@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ro.idp.upb.ioservice.data.dto.response.CategoryGetDto;
 import ro.idp.upb.ioservice.data.entity.Category;
+import ro.idp.upb.ioservice.exception.CategoryNotFoundException;
 import ro.idp.upb.ioservice.repository.CategoryRepository;
 
 @Service
@@ -20,10 +21,10 @@ public class CategoryService {
 		log.info("Find category by ID {}!", categoryId);
 		return categoryRepository
 				.findById(categoryId)
-				.orElseGet(
+				.orElseThrow(
 						() -> {
 							log.error("Category {} not found!", categoryId);
-							return null;
+							return new CategoryNotFoundException(categoryId);
 						});
 	}
 

@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ro.idp.upb.ioservice.data.dto.request.PostManagerDto;
@@ -14,6 +13,8 @@ import ro.idp.upb.ioservice.data.dto.request.ValidateLoginDto;
 import ro.idp.upb.ioservice.data.dto.response.GetUserDto;
 import ro.idp.upb.ioservice.data.entity.User;
 import ro.idp.upb.ioservice.data.enums.Role;
+import ro.idp.upb.ioservice.exception.InvalidCredentialsException;
+import ro.idp.upb.ioservice.exception.UsernameAlreadyExistsException;
 import ro.idp.upb.ioservice.exception.UsernameNotFoundException;
 import ro.idp.upb.ioservice.repository.UserRepository;
 
@@ -44,7 +45,7 @@ public class UserService {
 				.orElseThrow(
 						() -> {
 							log.error("Username {} not found", email);
-							return new UsernameNotFoundException("User not found");
+							return new UsernameNotFoundException(email);
 						});
 	}
 
@@ -55,7 +56,7 @@ public class UserService {
 		return userToDto(user);
 	}
 
-	public ResponseEntity<?> registerUser(RegisterRequest dto) {
+	public GetUserDto registerUser(RegisterRequest dto) {
 		log.info(
 				"Registering user [Firstname: {}], [Lastname: {}], [Email: {}]...",
 				dto.getFirstName(),
@@ -63,7 +64,7 @@ public class UserService {
 				dto.getEmail());
 		if (userRepository.existsByEmail(dto.getEmail())) {
 			log.error("Username {} already exists!", dto.getEmail());
-			return ResponseEntity.badRequest().build();
+			throw new UsernameAlreadyExistsException(dto.getEmail());
 		}
 		var user =
 				User.builder()
@@ -81,22 +82,22 @@ public class UserService {
 				dto.getLastName(),
 				dto.getEmail(),
 				savedUser.getId());
-		return ResponseEntity.ok(userDto);
+		return userDto;
 	}
 
-	public ResponseEntity<GetUserDto> validateLogin(final ValidateLoginDto dto) {
+	public GetUserDto validateLogin(final ValidateLoginDto dto) {
 		log.info("Validating login request for email {}...", dto.getEmail());
 		final User user = findUserByEmail(dto.getEmail());
 		if (passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
 			log.info("Login request is validated for email {}!", dto.getEmail());
-			return ResponseEntity.ok(userToDto(user));
+			return userToDto(user);
 		} else {
 			log.error("Invalid credentials for login request email {}!", dto.getEmail());
-			return ResponseEntity.badRequest().build();
+			throw new InvalidCredentialsException();
 		}
 	}
 
-	public ResponseEntity<?> createManager(PostManagerDto dto) {
+	public GetUserDto createManager(PostManagerDto dto) {
 		log.info(
 				"Creating manager [Firstname: {}], [Lastname: {}], [Email: {}]...",
 				dto.getFirstName(),
@@ -104,7 +105,7 @@ public class UserService {
 				dto.getEmail());
 		if (userRepository.existsByEmail(dto.getEmail())) {
 			log.error("[MANAGER CREATE] Email {} already exists!", dto.getEmail());
-			return ResponseEntity.badRequest().build();
+			throw new UsernameAlreadyExistsException(dto.getEmail());
 		}
 		var user =
 				User.builder()
@@ -121,6 +122,6 @@ public class UserService {
 				dto.getLastName(),
 				dto.getEmail(),
 				savedUser.getId());
-		return ResponseEntity.ok(userToDto(savedUser));
+		return userToDto(savedUser);
 	}
 }

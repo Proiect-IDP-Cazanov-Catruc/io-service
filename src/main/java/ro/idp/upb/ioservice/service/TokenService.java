@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ro.idp.upb.ioservice.data.dto.request.PostTokensDto;
@@ -13,6 +12,8 @@ import ro.idp.upb.ioservice.data.dto.response.TokenDto;
 import ro.idp.upb.ioservice.data.entity.Token;
 import ro.idp.upb.ioservice.data.entity.User;
 import ro.idp.upb.ioservice.data.enums.TokenType;
+import ro.idp.upb.ioservice.exception.NotRefreshTokenException;
+import ro.idp.upb.ioservice.exception.TokenNotFoundException;
 import ro.idp.upb.ioservice.exception.UsernameNotFoundException;
 import ro.idp.upb.ioservice.repository.TokenRepository;
 
@@ -23,12 +24,12 @@ public class TokenService {
 	private final TokenRepository tokenRepository;
 	private final UserService userService;
 
-	public ResponseEntity<?> findToken(String token, TokenType tokenType) {
-		log.info("Find token {} and token type {}...", token.substring(0, 15), tokenType);
+	public TokenDto findToken(String token, TokenType tokenType) {
+		log.info("Find token {} with token type {}...", token.substring(0, 15), tokenType);
 		Optional<Token> tokenOptional = tokenRepository.findByTokenAndTokenType(token, tokenType);
 		if (tokenOptional.isEmpty()) {
-			log.error("Unable to find token {} and token type {}!", token.substring(0, 15), tokenType);
-			return ResponseEntity.notFound().build();
+			log.error("Unable to find token {} with token type {}!", token.substring(0, 15), tokenType);
+			throw new TokenNotFoundException(token, tokenType);
 		} else {
 			Token tokenEntity = tokenOptional.get();
 			Token associatedTokenEntity = tokenEntity.getAssociatedToken();
@@ -54,7 +55,7 @@ public class TokenService {
 			tokenDto.setAssociatedToken(associatedTokenDto);
 			log.info("Found token {} and token type {}, returning!", token.substring(0, 15), tokenType);
 
-			return ResponseEntity.ok(tokenDto);
+			return tokenDto;
 		}
 	}
 
@@ -85,7 +86,7 @@ public class TokenService {
 						.orElseThrow(
 								() -> {
 									log.error("Username with id {} not found", tokens.getUserId());
-									return new UsernameNotFoundException("User not found");
+									return new UsernameNotFoundException(tokens.getUserId());
 								});
 		var accessTokenEntity =
 				Token.builder()
@@ -128,16 +129,16 @@ public class TokenService {
 				});
 	}
 
-	public ResponseEntity<?> isRefreshToken(String token) {
+	public Boolean isRefreshToken(String token) {
 		log.info("Verifying if token {} is actually refresh token...", token.substring(0, 15));
 		Token storedToken =
 				tokenRepository.findByTokenAndTokenType(token, TokenType.REFRESH_TOKEN).orElse(null);
 		if (storedToken == null) {
 			log.error("Provided token {} is not a refresh token!", token);
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Boolean.FALSE);
+			throw new NotRefreshTokenException(token);
 		} else {
 			log.info("Token {} is actually refresh token! Returning true!", token.substring(0, 15));
-			return ResponseEntity.ok(Boolean.TRUE);
+			return Boolean.TRUE;
 		}
 	}
 }

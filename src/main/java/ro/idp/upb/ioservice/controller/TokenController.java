@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ro.idp.upb.ioservice.data.dto.request.PostTokensDto;
+import ro.idp.upb.ioservice.data.dto.response.TokenDto;
 import ro.idp.upb.ioservice.data.enums.TokenType;
 import ro.idp.upb.ioservice.service.TokenService;
 
@@ -16,8 +17,7 @@ public class TokenController {
 	private final TokenService tokenService;
 
 	@GetMapping("/{tokenType}/{token}")
-	public ResponseEntity<?> findToken(
-			@PathVariable String token, @PathVariable TokenType tokenType) {
+	public TokenDto findToken(@PathVariable String token, @PathVariable TokenType tokenType) {
 		return tokenService.findToken(token, tokenType);
 	}
 
@@ -37,7 +37,7 @@ public class TokenController {
 	}
 
 	@GetMapping("/is-refresh/{token}")
-	public ResponseEntity<?> isRefresh(@PathVariable String token) {
+	public Boolean isRefresh(@PathVariable String token) {
 		return tokenService.isRefreshToken(token);
 	}
 }
