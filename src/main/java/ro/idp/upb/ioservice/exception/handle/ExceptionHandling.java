@@ -17,7 +17,7 @@ public class ExceptionHandling {
 	public ResponseEntity<ErrorMessage> handleInvalidCredentials(
 			InvalidCredentialsException ex, HttpServletRequest request) {
 		ErrorMessage errorMessage =
-				buildErrorMessage(HttpStatus.UNAUTHORIZED, ErrorCode.E_002, ex, request);
+				buildErrorMessage(HttpStatus.BAD_REQUEST, ErrorCode.E_002, ex, request);
 		return new ResponseEntity<>(errorMessage, HttpStatus.valueOf(errorMessage.getStatus()));
 	}
 

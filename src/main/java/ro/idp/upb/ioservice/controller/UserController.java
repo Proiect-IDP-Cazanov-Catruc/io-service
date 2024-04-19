@@ -30,7 +30,7 @@ public class UserController {
 	}
 
 	@PostMapping("/validate-login")
-	public GetUserDto validateLogin(@RequestBody ValidateLoginDto dto) {
+	public GetUserDto validateLogin(@RequestBody @Valid ValidateLoginDto dto) {
 		return userService.validateLogin(dto);
 	}
 

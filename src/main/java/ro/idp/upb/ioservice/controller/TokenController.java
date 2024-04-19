@@ -2,7 +2,6 @@
 package ro.idp.upb.ioservice.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ro.idp.upb.ioservice.data.dto.request.PostTokensDto;
 import ro.idp.upb.ioservice.data.dto.response.TokenDto;
@@ -27,8 +26,8 @@ public class TokenController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<?> saveUserTokens(@RequestBody PostTokensDto tokens) {
-		return tokenService.saveUserTokens(tokens);
+	public void saveUserTokens(@RequestBody PostTokensDto tokens) {
+		tokenService.saveUserTokens(tokens);
 	}
 
 	@PostMapping("/revoke/{token}")

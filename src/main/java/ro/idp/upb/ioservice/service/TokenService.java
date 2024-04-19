@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ro.idp.upb.ioservice.data.dto.request.PostTokensDto;
 import ro.idp.upb.ioservice.data.dto.response.TokenDto;
@@ -74,7 +73,7 @@ public class TokenService {
 		}
 	}
 
-	public ResponseEntity<?> saveUserTokens(PostTokensDto tokens) {
+	public void saveUserTokens(PostTokensDto tokens) {
 		log.info(
 				"Trying to save access token {} and refresh token {} for user {}...",
 				tokens.getAccessToken().substring(0, 15),
@@ -112,7 +111,6 @@ public class TokenService {
 				tokens.getAccessToken().substring(0, 15),
 				tokens.getRefreshToken().substring(0, 15),
 				tokens.getUserId());
-		return ResponseEntity.ok().build();
 	}
 
 	public void revokeToken(String token) {
