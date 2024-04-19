@@ -1,11 +1,9 @@
 /* Ionel Catruc 343C3, Veaceslav Cazanov 343C3 | IDP IO-SERVICE | (C) 2024 */
 package ro.idp.upb.ioservice.bootstrap;
 
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -74,8 +72,8 @@ public class InitDatabase implements CommandLineRunner {
 		userRepository.save(managerUser);
 	}
 
-	public void parseCategoriesCSV(String filePath) throws IOException {
-		FileReader reader = new FileReader(filePath);
+	public void parseCategoriesCSV(Resource csvResource) throws IOException {
+		Reader reader = new InputStreamReader(csvResource.getInputStream());
 		CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader());
 
 		for (CSVRecord record : csvParser) {
@@ -88,8 +86,8 @@ public class InitDatabase implements CommandLineRunner {
 		}
 	}
 
-	public void parseUsersCSV(String filePath) throws IOException {
-		FileReader reader = new FileReader(filePath);
+	public void parseUsersCSV(Resource csvResource) throws IOException {
+		Reader reader = new InputStreamReader(csvResource.getInputStream());
 		CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader());
 
 		for (CSVRecord record : csvParser) {
@@ -105,8 +103,8 @@ public class InitDatabase implements CommandLineRunner {
 		}
 	}
 
-	public void parseProductsCSV(String filePath) throws IOException {
-		FileReader reader = new FileReader(filePath);
+	public void parseProductsCSV(Resource csvResource) throws IOException {
+		Reader reader = new InputStreamReader(csvResource.getInputStream());
 		CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader());
 
 		for (CSVRecord record : csvParser) {
@@ -122,8 +120,7 @@ public class InitDatabase implements CommandLineRunner {
 		}
 	}
 
-	private String getResourceFilePath(String resourcePath) throws IOException {
-		Resource resource = resourceLoader.getResource("classpath:" + resourcePath);
-		return Objects.requireNonNull(resource.getFile().getAbsolutePath());
+	private Resource getResourceFilePath(String resourcePath) {
+		return resourceLoader.getResource("classpath:" + resourcePath);
 	}
 }
