@@ -13,7 +13,7 @@ import ro.idp.upb.ioservice.data.entity.Order;
 import ro.idp.upb.ioservice.data.entity.Product;
 import ro.idp.upb.ioservice.data.entity.User;
 import ro.idp.upb.ioservice.exception.UsernameNotFoundException;
-import ro.idp.upb.ioservice.exception.handle.ProductNotFoundException;
+import ro.idp.upb.ioservice.exception.ProductNotFoundException;
 import ro.idp.upb.ioservice.repository.OrderRepository;
 
 @Service
