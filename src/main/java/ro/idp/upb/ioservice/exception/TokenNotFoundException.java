@@ -3,6 +3,7 @@ package ro.idp.upb.ioservice.exception;
 
 import java.util.Optional;
 import ro.idp.upb.ioservice.data.enums.TokenType;
+import ro.idp.upb.ioservice.utils.StringUtils;
 
 public class TokenNotFoundException extends RuntimeException {
 	private final Optional<String> token;
@@ -36,9 +37,10 @@ public class TokenNotFoundException extends RuntimeException {
 	public String getMessage() {
 		if (token.isPresent() && tokenType.isPresent()) {
 			return String.format(
-					"Token %s with type %s not found", token.get().substring(0, 15), tokenType.get());
+					"Token %s with type %s not found",
+					StringUtils.truncateString(token.get()), tokenType.get());
 		} else if (token.isPresent()) {
-			return String.format("Token %s not found", token.get().substring(0, 15));
+			return String.format("Token %s not found", StringUtils.truncateString(token.get()));
 		} else if (tokenType.isPresent()) {
 			return String.format("Token by token type %s not found", tokenType.get());
 		}

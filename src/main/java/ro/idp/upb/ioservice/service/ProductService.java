@@ -13,6 +13,7 @@ import ro.idp.upb.ioservice.data.dto.response.ProductGetDto;
 import ro.idp.upb.ioservice.data.entity.Category;
 import ro.idp.upb.ioservice.data.entity.Product;
 import ro.idp.upb.ioservice.repository.ProductRepository;
+import ro.idp.upb.ioservice.utils.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class ProductService {
 		log.info(
 				"Adding product [Name: {}], [Description: {}], [Price: {}], [Quantity: {}], [CategoryId: {}]...",
 				dto.getName(),
-				dto.getDescription().substring(0, 15),
+				StringUtils.truncateString(dto.getDescription()),
 				dto.getPrice(),
 				dto.getQuantity(),
 				dto.getCategoryId());
@@ -43,7 +44,7 @@ public class ProductService {
 		log.info(
 				"Added product [Name: {}], [Description: {}], [Price: {}], [Quantity: {}], [CategoryId: {}]",
 				dto.getName(),
-				dto.getDescription().substring(0, 15),
+				StringUtils.truncateString(dto.getDescription()),
 				dto.getPrice(),
 				dto.getQuantity(),
 				dto.getCategoryId());

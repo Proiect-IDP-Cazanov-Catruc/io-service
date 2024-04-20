@@ -15,6 +15,7 @@ import ro.idp.upb.ioservice.exception.NotRefreshTokenException;
 import ro.idp.upb.ioservice.exception.TokenNotFoundException;
 import ro.idp.upb.ioservice.exception.UsernameNotFoundException;
 import ro.idp.upb.ioservice.repository.TokenRepository;
+import ro.idp.upb.ioservice.utils.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -24,10 +25,13 @@ public class TokenService {
 	private final UserService userService;
 
 	public TokenDto findToken(String token, TokenType tokenType) {
-		log.info("Find token {} with token type {}...", token.substring(0, 15), tokenType);
+		log.info("Find token {} with token type {}...", StringUtils.truncateString(token), tokenType);
 		Optional<Token> tokenOptional = tokenRepository.findByTokenAndTokenType(token, tokenType);
 		if (tokenOptional.isEmpty()) {
-			log.error("Unable to find token {} with token type {}!", token.substring(0, 15), tokenType);
+			log.error(
+					"Unable to find token {} with token type {}!",
+					StringUtils.truncateString(token),
+					tokenType);
 			throw new TokenNotFoundException(token, tokenType);
 		} else {
 			Token tokenEntity = tokenOptional.get();
@@ -52,18 +56,22 @@ public class TokenService {
 							.build();
 
 			tokenDto.setAssociatedToken(associatedTokenDto);
-			log.info("Found token {} and token type {}, returning!", token.substring(0, 15), tokenType);
+			log.info(
+					"Found token {} and token type {}, returning!",
+					StringUtils.truncateString(token),
+					tokenType);
 
 			return tokenDto;
 		}
 	}
 
 	public void logoutToken(String token) {
-		log.info("Trying to revoke(logout) token {}...", token.substring(0, 15));
+		log.info("Trying to revoke(logout) token {}...", StringUtils.truncateString(token));
 		Token storedToken =
 				tokenRepository.findByTokenAndTokenType(token, TokenType.ACCESS_TOKEN).orElse(null);
 		if (storedToken != null) {
-			log.info("Token {} found, revoking it and associated token...", token.substring(0, 15));
+			log.info(
+					"Token {} found, revoking it and associated token...", StringUtils.truncateString(token));
 			storedToken.setExpired(true);
 			storedToken.setRevoked(true);
 			tokenRepository.save(storedToken);
@@ -76,8 +84,8 @@ public class TokenService {
 	public void saveUserTokens(PostTokensDto tokens) {
 		log.info(
 				"Trying to save access token {} and refresh token {} for user {}...",
-				tokens.getAccessToken().substring(0, 15),
-				tokens.getRefreshToken().substring(0, 15),
+				StringUtils.truncateString(tokens.getAccessToken()),
+				StringUtils.truncateString(tokens.getRefreshToken()),
 				tokens.getUserId());
 		User user =
 				userService
@@ -108,13 +116,13 @@ public class TokenService {
 		tokenRepository.save(accessTokenEntity);
 		log.info(
 				"Saved access token {} and refresh token {} for user {}!",
-				tokens.getAccessToken().substring(0, 15),
-				tokens.getRefreshToken().substring(0, 15),
+				StringUtils.truncateString(tokens.getAccessToken()),
+				StringUtils.truncateString(tokens.getRefreshToken()),
 				tokens.getUserId());
 	}
 
 	public void revokeToken(String token) {
-		log.info("Revoking token {}...", token.substring(0, 15));
+		log.info("Revoking token {}...", StringUtils.truncateString(token));
 		List<Token> tokens = tokenRepository.findByToken(token);
 		tokens.forEach(
 				dbToken -> {
@@ -128,14 +136,16 @@ public class TokenService {
 	}
 
 	public Boolean isRefreshToken(String token) {
-		log.info("Verifying if token {} is actually refresh token...", token.substring(0, 15));
+		log.info(
+				"Verifying if token {} is actually refresh token...", StringUtils.truncateString(token));
 		Token storedToken =
 				tokenRepository.findByTokenAndTokenType(token, TokenType.REFRESH_TOKEN).orElse(null);
 		if (storedToken == null) {
-			log.error("Provided token {} is not a refresh token!", token);
+			log.error("Provided token {} is not a refresh token!", StringUtils.truncateString(token));
 			throw new NotRefreshTokenException(token);
 		} else {
-			log.info("Token {} is actually refresh token! Returning true!", token.substring(0, 15));
+			log.info(
+					"Token {} is actually refresh token! Returning true!", StringUtils.truncateString(token));
 			return Boolean.TRUE;
 		}
 	}
