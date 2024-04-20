@@ -30,6 +30,8 @@ A generic store's IO (database communication) service implementation. This will 
 
 Passwords will be stored encrypted, using BCrypt algorithm.
 
+**_NOTE:_** All communication is done via HTTP protocol, using application/json as Content-Type.
+
 ***
 ## Entities
 
